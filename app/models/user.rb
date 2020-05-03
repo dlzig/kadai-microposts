@@ -7,11 +7,16 @@ class User < ApplicationRecord
   has_secure_password
 
   has_many :microposts
+  # Relationship
   has_many :relationships
   has_many :followings, through: :relationships, source: :follow
   has_many :reverses_of_relationship, class_name: 'Relationship', foreign_key: 'follow_id'
   has_many :followers, through: :reverses_of_relationship, source: :user
-
+  # Favarite
+  has_many :favarites
+  has_many :microposts, through: :favarites
+  
+  # フォロー/フォロワー
   def follow(other_user)
     unless self == other_user
       self.relationships.find_or_create_by(follow_id: other_user.id)
@@ -30,4 +35,21 @@ class User < ApplicationRecord
   def feed_microposts
     Micropost.where(user_id: self.following_ids + [self.id])
   end
+  
+  # お気に入り機能
+  def add_favarite
+    unless self == other_user
+      self.favarites.find_or_create_by(like_id: other_user.id)
+    end
+  end
+  
+  def unfavarite
+    favarite = self.favarits.find_by(like_id: other_user.id)
+    favarite.destroy if favarite
+  end
+  
+  def add_favarite?(other_user)
+    self.favarites.incrude?(other_user)
+  end
+  
 end
