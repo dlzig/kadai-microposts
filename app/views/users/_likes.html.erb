@@ -1,0 +1,16 @@
+<ul class="list-unstyled">
+  <% likes.each do |fav_micropost| %>
+    <li class="media">
+      <img class="mr-2 rounded" src="<%= gravatar_url(fav_micropost.user, { size: 50 }) %>" alt="">
+      <div class="media-body">
+        <div>
+          <%= link_to fav_micropost.user.name, user_path(fav_micropost.user) %> <span class="text-muted">posted at <%= fav_micropost.created_at %></span>
+        </div>
+        <div>
+          <p><%= fav_micropost.content %></p>
+        </div>
+      </div>
+    </li>
+  <% end %>
+  <%= paginate likes %>
+</ul>

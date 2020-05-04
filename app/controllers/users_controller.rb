@@ -1,5 +1,5 @@
 class UsersController < ApplicationController
-  before_action :require_user_logged_in, only: [:inde, :show, :followings, :followers]
+  before_action :require_user_logged_in, only: [:inde, :show, :followings, :followers, :likes]
   
   
   def index
@@ -40,8 +40,14 @@ class UsersController < ApplicationController
     counts(@user)
   end
   
-  private
+  def likes
+    @user = User.find(params[:id])
+    @likes = @user.fav_posts.page (params[:page])
+    counts(@user)
+  end
   
+  private
+
   def user_params
     params.require(:user).permit(:name, :email, :password, :password_confirmation)
   end

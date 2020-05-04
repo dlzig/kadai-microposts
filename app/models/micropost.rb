@@ -2,8 +2,8 @@ class Micropost < ApplicationRecord
   belongs_to :user
   
   # お気に入り機能
-  has_many :favarites
-  has_many :user, through: :favarites
+  has_many :favorites
+  has_many :liker, through: :favorites, source: :user
   
   validates :content, presence: true, length: { maximum: 255 }
 end

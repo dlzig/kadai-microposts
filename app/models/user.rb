@@ -12,9 +12,9 @@ class User < ApplicationRecord
   has_many :followings, through: :relationships, source: :follow
   has_many :reverses_of_relationship, class_name: 'Relationship', foreign_key: 'follow_id'
   has_many :followers, through: :reverses_of_relationship, source: :user
-  # Favarite
-  has_many :favarites
-  has_many :microposts, through: :favarites
+  # Favorite
+  has_many :favorites
+  has_many :fav_posts, through: :favorites, source: :micropost
   
   # フォロー/フォロワー
   def follow(other_user)
@@ -37,19 +37,18 @@ class User < ApplicationRecord
   end
   
   # お気に入り機能
-  def add_favarite
-    unless self == other_user
-      self.favarites.find_or_create_by(like_id: other_user.id)
-    end
+  def like(micropost)
+    favorites.find_or_create_by(micropost_id: micropost.id)
   end
   
-  def unfavarite
-    favarite = self.favarits.find_by(like_id: other_user.id)
-    favarite.destroy if favarite
+  def unlike(micropost)
+    favorite = self.favorites.find_by(micropost_id: micropost.id)
+    favorite.destroy if favorite
   end
   
-  def add_favarite?(other_user)
-    self.favarites.incrude?(other_user)
+  def add_favorite?(micropost)
+    self.fav_posts.include?(micropost)
+    #has_manyで定義したfav_postにする
   end
-  
+
 end
